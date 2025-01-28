@@ -29,8 +29,7 @@ class UserController {
     // Listar todos os usuários
     static async getAllUsers(req, res) {
         try {
-            // const users = await User.findAll({ attributes: { exclude: ['password'] } }); // Exclui a senha da resposta
-            const users = await User.findAll(); // Exclui a senha da resposta
+            const users = await User.findAll({ attributes: { exclude: ['password'] } }); // Exclui a senha da resposta
             return res.status(200).json(users);
         } catch (error) {
             console.error(chalk.bgRed.bold(error));
