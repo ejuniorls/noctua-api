@@ -1,13 +1,14 @@
-const express = require('express');
-const UserController = require('../controllers/UserController');
+const express = require("express");
+const UserController = require("../controllers/UserController");
+const autenticarToken = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-router.post('/', UserController.createUser); // Criar usuário
-router.get('/', UserController.getAllUsers); // Listar usuários
-router.get('/:id', UserController.getUserById); // Buscar usuário por ID
-router.put('/:id', UserController.updateUser); // Atualizar usuário
-router.delete('/:id', UserController.deleteUser); // Deletar usuário (soft delete)
-router.post('/restore/:id', UserController.restoreUser); // Restaurar usuário deletado
+router.post("/", autenticarToken, UserController.createUser); // Criar usuário
+router.get("/", autenticarToken, UserController.getAllUsers); // Listar usuários
+router.get("/:id", autenticarToken, UserController.getUserById); // Buscar usuário por ID
+router.put("/:id", autenticarToken, UserController.updateUser); // Atualizar usuário
+router.delete("/:id", autenticarToken, UserController.deleteUser); // Deletar usuário (soft delete)
+router.post("/restore/:id", autenticarToken, UserController.restoreUser); // Restaurar usuário deletado
 
 module.exports = router;
