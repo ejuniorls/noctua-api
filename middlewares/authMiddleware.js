@@ -1,27 +1,22 @@
 const chalk = require("chalk");
 const jwt = require("jsonwebtoken");
 
-const autenticarToken = (req, res, next) => {
-  const token = req.header("Authorization");
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ message: "Access denied. Token not provided." });
+    return res.status(401).json({ message: "Token not provided" });
   }
 
   try {
-    const tokenSemBearer = token.replace("Bearer ", "");
-    const usuarioDecodificado = jwt.verify(
-      tokenSemBearer,
-      process.env.JWT_SECRET,
-    );
-    req.usuario = usuarioDecodificado; // Adiciona os dados do usuário ao request
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = user;
     next();
   } catch (error) {
     console.error(chalk.bgRed.bold(error));
-    return res.status(403).json({ message: "Invalid or expired token." });
+    return res.status(403).json({ message: "Invalid token" });
   }
 };
 
-module.exports = autenticarToken;
+module.exports = authenticateToken;
