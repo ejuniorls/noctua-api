@@ -31,10 +31,30 @@ class UserController extends Controller {
   // Find all users
   async findAll(req, res) {
     try {
-      const result = await this.service.findAll({
-        attributes: { exclude: ["password"] },
+      const { limit, offset, page } = req.pagination;
+      const baseUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`;
+
+      // const result = await this.service.findAll({
+      const { count, rows: users } = await this.service.findAll({
+        attributes: { exclude: ["password"] }, limit, offset
       });
-      res.status(200).json({ status: true, response: result });
+
+      const totalPages = Math.ceil(count / limit);
+
+      // Função para gerar os links de paginação
+      const generatePageLink = (pageNum) => {
+        return `${baseUrl}?page=${pageNum}&limit=${limit}`;
+      };
+
+      // res.status(200).json({ status: true, response: result });
+      res.status(200).json({
+        currentPage: page,
+        totalItems: count,
+        totalPages,
+        nextPage: page < totalPages ? generatePageLink(page + 1) : null,
+        previousPage: page > 1 ? generatePageLink(page - 1) : null,
+        users
+      });
     } catch (error) {
       res.status(400).json({ status: false, error: error.message });
     }

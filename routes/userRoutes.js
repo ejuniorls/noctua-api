@@ -15,8 +15,10 @@
 // module.exports = router;
 
 const { Router } = require("express");
-const authenticateToken = require("../middlewares/authMiddleware");
+const authenticateToken = require("../middlewares/authMiddleware.js");
+const pagination = require('../middlewares/paginationMiddleware.js');
 const UserController = require("../controllers/UserController.js");
+
 
 const userController = new UserController();
 
@@ -98,7 +100,7 @@ router.post("/", authenticateToken, (req, res) =>
  *       500:
  *         description: Failed to retrieve users
  */
-router.get("/", authenticateToken, (req, res) =>
+router.get("/", authenticateToken, pagination, (req, res) =>
   userController.findAll(req, res),
 );
 

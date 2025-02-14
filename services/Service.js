@@ -7,8 +7,9 @@ class Service {
     return this.model.create(data);
   }
 
-  async findAll(options = {}) {
-    return this.model.findAll(options);
+  async findAll(options = {}, limit, offset) {
+    console.log(options, limit, offset)
+    return this.model.findAndCountAll(options, limit, offset);
   }
 
   async findById(id, options = {}) {
