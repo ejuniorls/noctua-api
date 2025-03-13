@@ -9,34 +9,40 @@ const router = Router();
 
 /**
  * @swagger
- * tags:
- *   name: Articles
- *   description: User Role Management
- */
-
-/**
- * @swagger
- *
- * /api/articles:
+ * /articles:
  *   post:
- *     summary: Create user role
+ *     summary: Criar um novo artigo
+ *     tags:
+ *       - Articles
  *     security:
- *       - bearerAuth: []
- *     tags: [Articles]
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - title
+ *               - content
+ *               - author_id
+ *               - category_id
  *             properties:
- *               name:
+ *               title:
  *                 type: string
+ *               content:
+ *                 type: string
+ *               author_id:
+ *                 type: integer
+ *               category_id:
+ *                 type: integer
  *     responses:
  *       201:
- *         description: User role created successfully
- *       500:
- *         description: Failed to create user role
+ *         description: Artigo criado com sucesso
+ *       400:
+ *         description: Dados inválidos
+ *       401:
+ *         description: Não autorizado
  */
 router.post("/", authenticateToken, (req, res) =>
   articleController.create(req, res),
@@ -44,34 +50,29 @@ router.post("/", authenticateToken, (req, res) =>
 
 /**
  * @swagger
- * /api/articles:
+ * /articles:
  *   get:
- *     summary: Returns all Articles
+ *     summary: Listar todos os artigos
+ *     tags:
+ *       - Articles
  *     security:
- *       - bearerAuth: []
- *     tags: [Articles]
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Número da página
+ *         schema:
+ *           type: integer
+ *       - name: limit
+ *         in: query
+ *         description: Quantidade de itens por página
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: User role list returned successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   name:
- *                     type: string
- *                   created_at:
- *                     type: string
- *                   updated_at:
- *                     type: string
- *                   deleted_at:
- *                     type: string
- *       500:
- *         description: Failed to retrieve Articles
+ *         description: Lista de artigos retornada com sucesso
+ *       401:
+ *         description: Não autorizado
  */
 router.get("/", authenticateToken, pagination, (req, res) =>
   articleController.findAll(req, res),
@@ -79,36 +80,26 @@ router.get("/", authenticateToken, pagination, (req, res) =>
 
 /**
  * @swagger
- * /api/articles/{id}:
+ * /articles/{id}:
  *   get:
- *     summary: Returns a user by id
+ *     summary: Buscar um artigo pelo ID
+ *     tags:
+ *       - Articles
  *     security:
- *       - bearerAuth: []
- *     tags: [Articles]
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: User role list returned successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   name:
- *                     type: string
- *                   created_at:
- *                     type: string
- *                   updated_at:
- *                     type: string
- *                   deleted_at:
- *                     type: string
+ *         description: Artigo encontrado
  *       404:
- *         description: User role not found
- *       500:
- *         description: Failed to retrieve user role
+ *         description: Artigo não encontrado
+ *       401:
+ *         description: Não autorizado
  */
 router.get("/:id", authenticateToken, (req, res) =>
   articleController.findById(req, res),
@@ -116,84 +107,19 @@ router.get("/:id", authenticateToken, (req, res) =>
 
 /**
  * @swagger
- * /api/articles/{id}:
+ * /articles/{id}:
  *   put:
- *     summary: Update a user role by id
+ *     summary: Atualizar um artigo
+ *     tags:
+ *       - Articles
  *     security:
- *       - bearerAuth: []
- *     tags: [Articles]
- *     responses:
- *       200:
- *         description: User role list returned successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   name:
- *                     type: string
- *                   created_at:
- *                     type: string
- *                   updated_at:
- *                     type: string
- *                   deleted_at:
- *                     type: string
- *       404:
- *         description: User role not found
- *       500:
- *         description: Failed to update user role
- */
-router.put("/:id", authenticateToken, (req, res) =>
-  articleController.update(req, res),
-);
-
-/**
- * @swagger
- * /api/articles/{id}:
- *   delete:
- *     summary: Remove a user role by id (soft delete)
- *     security:
- *       - bearerAuth: []
- *     tags: [Articles]
+ *       - BearerAuth: []
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID do post a ser deletado
- *     responses:
- *       200:
- *         description: User deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *       404:
- *         description: User not found
- *       500:
- *         description: Failed to delete user
- */
-router.delete("/:id", authenticateToken, (req, res) =>
-  articleController.delete(req, res),
-);
-
-/**
- * @swagger
- *
- * /api/articles/{id}:
- *   post:
- *     summary: Restore user by id
- *     security:
- *       - bearerAuth: []
- *     tags: [Articles]
  *     requestBody:
  *       required: true
  *       content:
@@ -201,15 +127,77 @@ router.delete("/:id", authenticateToken, (req, res) =>
  *           schema:
  *             type: object
  *             properties:
- *               id:
- *                 type: number
+ *               title:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               author_id:
+ *                 type: integer
+ *               category_id:
+ *                 type: integer
  *     responses:
- *       201:
- *         description: User restored successfully
+ *       200:
+ *         description: Artigo atualizado com sucesso
+ *       400:
+ *         description: Dados inválidos
+ *       401:
+ *         description: Não autorizado
  *       404:
- *         description: User not found
- *       500:
- *         description: Failed to restore user
+ *         description: Artigo não encontrado
+ */
+router.put("/:id", authenticateToken, (req, res) =>
+  articleController.update(req, res),
+);
+
+/**
+ * @swagger
+ * /articles/{id}:
+ *   delete:
+ *     summary: Remover um artigo
+ *     tags:
+ *       - Articles
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Artigo removido com sucesso
+ *       401:
+ *         description: Não autorizado
+ *       404:
+ *         description: Artigo não encontrado
+ */
+router.delete("/:id", authenticateToken, (req, res) =>
+  articleController.delete(req, res),
+);
+
+/**
+ * @swagger
+ * /articles/restore/{id}:
+ *   post:
+ *     summary: Restaurar um artigo removido
+ *     tags:
+ *       - Articles
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Artigo restaurado com sucesso
+ *       401:
+ *         description: Não autorizado
+ *       404:
+ *         description: Artigo não encontrado
  */
 router.post("/restore/:id", authenticateToken, (req, res) =>
   articleController.restore(req, res),
