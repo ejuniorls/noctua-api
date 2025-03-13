@@ -1,26 +1,28 @@
 const { Router } = require("express");
 const authenticateToken = require("../middlewares/authMiddleware.js");
 const pagination = require("../middlewares/paginationMiddleware.js");
-const UserController = require("../controllers/UserController.js");
+const UserRoleContoller = require("../controllers/UserRoleContoller.js");
 
-const userController = new UserController();
+const userRoleContoller = new UserRoleContoller();
 
 const router = Router();
 
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: Gerenciamento de usuários
+ *   name: User Roles
+ *   description: User Role Management
  */
 
 /**
  * @swagger
  *
- * /users:
+ * /api/user_roles:
  *   post:
- *     summary: Create user
- *     tags: [Users]
+ *     summary: Create user role
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [User Roles]
  *     requestBody:
  *       required: true
  *       content:
@@ -30,33 +32,27 @@ const router = Router();
  *             properties:
  *               name:
  *                 type: string
- *               email:
- *                 type: string
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *               role:
- *                 type: string
  *     responses:
  *       201:
- *         description: User created successfully
+ *         description: User role created successfully
  *       500:
- *         description: Failed to create user
+ *         description: Failed to create user role
  */
 router.post("/", authenticateToken, (req, res) =>
-  userController.create(req, res),
+  userRoleContoller.create(req, res),
 );
 
 /**
  * @swagger
- * /users:
+ * /api/user_roles:
  *   get:
- *     summary: Returns all users
- *     tags: [Users]
+ *     summary: Returns all user roles
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [User Roles]
  *     responses:
  *       200:
- *         description: User list returned successfully
+ *         description: User role list returned successfully
  *         content:
  *           application/json:
  *             schema:
@@ -68,12 +64,6 @@ router.post("/", authenticateToken, (req, res) =>
  *                     type: integer
  *                   name:
  *                     type: string
- *                   email:
- *                     type: string
- *                   username:
- *                     type: string
- *                   role:
- *                     type: string
  *                   created_at:
  *                     type: string
  *                   updated_at:
@@ -81,21 +71,23 @@ router.post("/", authenticateToken, (req, res) =>
  *                   deleted_at:
  *                     type: string
  *       500:
- *         description: Failed to retrieve users
+ *         description: Failed to retrieve user roles
  */
 router.get("/", authenticateToken, pagination, (req, res) =>
-  userController.findAll(req, res),
+  userRoleContoller.findAll(req, res),
 );
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/user_roles/{id}:
  *   get:
  *     summary: Returns a user by id
- *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [User Roles]
  *     responses:
  *       200:
- *         description: User list returned successfully
+ *         description: User role list returned successfully
  *         content:
  *           application/json:
  *             schema:
@@ -107,12 +99,6 @@ router.get("/", authenticateToken, pagination, (req, res) =>
  *                     type: integer
  *                   name:
  *                     type: string
- *                   email:
- *                     type: string
- *                   username:
- *                     type: string
- *                   role:
- *                     type: string
  *                   created_at:
  *                     type: string
  *                   updated_at:
@@ -120,23 +106,25 @@ router.get("/", authenticateToken, pagination, (req, res) =>
  *                   deleted_at:
  *                     type: string
  *       404:
- *         description: User not found
+ *         description: User role not found
  *       500:
- *         description: Failed to retrieve user
+ *         description: Failed to retrieve user role
  */
 router.get("/:id", authenticateToken, (req, res) =>
-  userController.findById(req, res),
+  userRoleContoller.findById(req, res),
 );
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/user_roles/{id}:
  *   put:
- *     summary: Update a user by id
- *     tags: [Users]
+ *     summary: Update a user role by id
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [User Roles]
  *     responses:
  *       200:
- *         description: User list returned successfully
+ *         description: User role list returned successfully
  *         content:
  *           application/json:
  *             schema:
@@ -148,12 +136,6 @@ router.get("/:id", authenticateToken, (req, res) =>
  *                     type: integer
  *                   name:
  *                     type: string
- *                   email:
- *                     type: string
- *                   username:
- *                     type: string
- *                   role:
- *                     type: string
  *                   created_at:
  *                     type: string
  *                   updated_at:
@@ -161,20 +143,22 @@ router.get("/:id", authenticateToken, (req, res) =>
  *                   deleted_at:
  *                     type: string
  *       404:
- *         description: User not found
+ *         description: User role not found
  *       500:
- *         description: Failed to update user
+ *         description: Failed to update user role
  */
 router.put("/:id", authenticateToken, (req, res) =>
-  userController.update(req, res),
+  userRoleContoller.update(req, res),
 );
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/user_roles/{id}:
  *   delete:
- *     summary: Remove a user by id (soft delete)
- *     tags: [Users]
+ *     summary: Remove a user role by id (soft delete)
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [User Roles]
  *     parameters:
  *       - in: path
  *         name: id
@@ -198,16 +182,18 @@ router.put("/:id", authenticateToken, (req, res) =>
  *         description: Failed to delete user
  */
 router.delete("/:id", authenticateToken, (req, res) =>
-  userController.delete(req, res),
+  userRoleContoller.delete(req, res),
 );
 
 /**
  * @swagger
  *
- * /users/{id}:
+ * /api/user_roles/{id}:
  *   post:
  *     summary: Restore user by id
- *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [User Roles]
  *     requestBody:
  *       required: true
  *       content:
@@ -226,7 +212,7 @@ router.delete("/:id", authenticateToken, (req, res) =>
  *         description: Failed to restore user
  */
 router.post("/restore/:id", authenticateToken, (req, res) =>
-  userController.restoreUser(req, res),
+  userRoleContoller.restore(req, res),
 );
 
 module.exports = router;

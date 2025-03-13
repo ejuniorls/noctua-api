@@ -4,3 +4,21 @@ npx sequelize-cli model:generate --name PostCategory --attributes name:string,de
 npx sequelize-cli model:generate --name PostComment --attributes postId:integer,userId:integer,content:text
 
 
+npx sequelize db:migrate:undo:all
+
+npx sequelize db:migrate
+
+npx sequelize-cli db:seed:all
+
+
+npx sequelize-cli seed:generate --name demo-user-roles
+npx sequelize-cli seed:generate --name demo-users
+
+npx sequelize-cli seed:generate --name demo-article-categories
+npx sequelize-cli seed:generate --name demo-articles
+npx sequelize-cli seed:generate --name demo-article-attachments
+npx sequelize-cli seed:generate --name demo-article-likes
+npx sequelize-cli seed:generate --name demo-article-comments
+npx sequelize-cli seed:generate --name demo-article-comment-likes
+npx sequelize-cli seed:generate --name demo-article-quizzes
+npx sequelize-cli seed:generate --name demo-article-quiz-answers

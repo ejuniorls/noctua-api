@@ -5,10 +5,24 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Noctua - API",
+      title: "noctua",
       version: "1.0.0",
-      description: "Documentação da API do Noctua",
+      description: "Documentação da API do noctua",
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
     servers: [
       {
         url: "http://localhost:3000",

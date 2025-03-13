@@ -10,22 +10,45 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasMany(models.Post, { foreignKey: "userId" });
-      User.hasMany(models.PostComment, { foreignKey: "userId" });
+      User.belongsTo(models.UserRole, { foreignKey: "id" });
+      User.hasMany(models.Article, { foreignKey: "author_id" });
+      User.hasMany(models.ArticleComment, { foreignKey: "user_id" });
+      User.hasMany(models.ArticleLike, { foreignKey: "user_id" });
+      User.hasMany(models.ArticleCommentLike, { foreignKey: "user_id" });
+      User.hasMany(models.ArticleNotification, { foreignKey: "user_id" });
+      User.hasMany(models.ArticleQuizAnswer, { foreignKey: "user_id" });
     }
   }
   User.init(
     {
-      name: DataTypes.STRING,
-      email: DataTypes.STRING,
-      username: DataTypes.STRING,
-      password: DataTypes.STRING,
-      role: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      role_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
     },
     {
       sequelize,
       modelName: "User",
       tableName: "users",
+      underscored: true,
       timestamps: true,
       paranoid: true,
     },

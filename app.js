@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+const cookieParser = require("cookie-parser");
 const createError = require("http-errors");
 const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const path = require("path");
 const routes = require("./routes"); // importa as rotas
 const swaggerDocs = require("./config/swagger");
 

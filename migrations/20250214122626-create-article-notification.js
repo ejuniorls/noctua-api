@@ -1,44 +1,45 @@
-"use strict";
 /* eslint-disable no-unused-vars */
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("post_comments", {
+    await queryInterface.createTable("article_notifications", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      postId: {
+      user_id: {
+        allowNull: false,
         type: Sequelize.INTEGER,
-        references: { model: "posts", key: "id" },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
-      userId: {
-        type: Sequelize.INTEGER,
-        references: { model: "users", key: "id" },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
+      message: {
+        type: Sequelize.STRING,
       },
-      content: {
-        type: Sequelize.TEXT,
+      is_read: {
+        type: Sequelize.BOOLEAN,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      deletedAt: {
+      deleted_at: {
         type: Sequelize.DATE,
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("post_comments");
+    await queryInterface.dropTable("article_notifications");
   },
 };

@@ -4,7 +4,7 @@ const { User } = require("../models"); // Ajuste conforme seu modelo de usuário
 
 class AuthService {
   // sign up user
-  static async signUp(name, email, username, password, role) {
+  static async signUp(name, email, username, password, role_id) {
     try {
       // Verifica se já existe um usuário com o mesmo email
       const emailExists = await User.findOne({ where: { email } });
@@ -27,7 +27,7 @@ class AuthService {
         email,
         username,
         password: hashedPassword,
-        role,
+        role_id,
       });
 
       return user;
@@ -49,7 +49,7 @@ class AuthService {
         throw new Error("invalid password");
       }
 
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ user_id: user.id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRATION,
       });
 

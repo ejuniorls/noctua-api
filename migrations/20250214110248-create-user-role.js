@@ -1,9 +1,9 @@
-"use strict";
 /* eslint-disable no-unused-vars */
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("post_categories", {
+    await queryInterface.createTable("user_roles", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,25 +11,24 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       name: {
+        allowNull: false,
         type: Sequelize.STRING,
+        unique: true,
       },
-      description: {
-        type: Sequelize.STRING,
-      },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      deletedAt: {
+      deleted_at: {
         type: Sequelize.DATE,
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("post_categories");
+    await queryInterface.dropTable("user_roles");
   },
 };

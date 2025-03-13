@@ -1,3 +1,5 @@
+const chalk = require("chalk");
+
 class Controller {
   constructor(service) {
     this.service = service;
@@ -8,6 +10,24 @@ class Controller {
       const result = await this.service.create(req.body);
       res.status(201).json({ status: true, response: result });
     } catch (error) {
+      console.log(chalk.bgRed.bold(error));
+
+      // const customErrorMessages = error.errors.map((err) => {
+      //   return err.message;
+      // });
+
+      // if (error.name === "SequelizeValidationError") {
+      //   res
+      //     .status(400)
+      //     .json({ status: false, error: customErrorMessages.join(", ") });
+      // } else if (error.name === "SequelizeUniqueConstraintError") {
+      //   res
+      //     .status(400)
+      //     .json({ status: false, error: customErrorMessages.join(", ") });
+      // } else {
+      //   res.status(400).json({ status: false, error: error.message });
+      // }
+
       res.status(400).json({ status: false, error: error.message });
     }
   }

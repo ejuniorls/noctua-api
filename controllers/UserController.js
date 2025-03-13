@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
 const Controller = require("./Controller");
 const UserService = require("../services/UserService");
+const { User } = require("../models"); // Importa o modelo de User
+
+const chalk = require("chalk");
 
 class UserController extends Controller {
   constructor() {
@@ -24,6 +27,8 @@ class UserController extends Controller {
       });
       res.status(201).json({ status: true, response: result });
     } catch (error) {
+      console.log(chalk.bgRed.bold(error));
+
       res.status(400).json({ status: false, error: error.message });
     }
   }
@@ -32,11 +37,13 @@ class UserController extends Controller {
   async findAll(req, res) {
     try {
       const { limit, offset, page } = req.pagination;
-      const baseUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}${req.path}`;
+      const baseUrl = `${req.protocol}://${req.get("host")}${req.baseUrl}${req.path}`;
 
       // const result = await this.service.findAll({
       const { count, rows: users } = await this.service.findAll({
-        attributes: { exclude: ["password"] }, limit, offset
+        attributes: { exclude: ["password"] },
+        limit,
+        offset,
       });
 
       const totalPages = Math.ceil(count / limit);
@@ -53,7 +60,7 @@ class UserController extends Controller {
         totalPages,
         nextPage: page < totalPages ? generatePageLink(page + 1) : null,
         previousPage: page > 1 ? generatePageLink(page - 1) : null,
-        users
+        users,
       });
     } catch (error) {
       res.status(400).json({ status: false, error: error.message });
@@ -105,6 +112,24 @@ class UserController extends Controller {
         return res.status(404).json({ status: false, error: "user not found" });
       }
       res.status(400).json({ status: false, error: error.message });
+    }
+  }
+
+  // Restaurar um usuário excluído
+  async restoreUser(req, res) {
+    try {
+      const { id } = req.params;
+      const user = await User.findByPk(id, { paranoid: false }); // Inclui usuários "soft deleted"
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      await user.restore(); // Restaura o usuário
+      return res
+        .status(200)
+        .json({ message: "User restored successfully", user });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Failed to restore user" });
     }
   }
 }

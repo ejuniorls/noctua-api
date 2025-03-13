@@ -1,0 +1,32 @@
+# Gerar a model e migration de roles usuários
+npx sequelize-cli model:generate --name UserRole --attributes name:string
+
+# Gerar a model e migration de usuários
+npx sequelize-cli model:generate --name User --attributes name:string,email:string,password:string,role:string
+
+# Gerar a model e migration de categorias de artigos
+npx sequelize-cli model:generate --name ArticleCategory --attributes name:string,slug:string
+
+# Gerar a model e migration de artigos
+npx sequelize-cli model:generate --name Article --attributes title:string,slug:string,content:text,author_id:integer,category_id:integer,published_at:date,views:integer,status:string
+
+# Gerar a model e migration de comentários de artigos
+npx sequelize-cli model:generate --name ArticleComment --attributes article_id:integer,user_id:integer,content:text
+
+# Gerar a model e migration de curtidas nos artigos
+npx sequelize-cli model:generate --name ArticleLike --attributes article_id:integer,user_id:integer
+
+# Gerar a model e migration de curtidas nos comentários de artigos
+npx sequelize-cli model:generate --name ArticleCommentLike --attributes comment_id:integer,user_id:integer
+
+# Gerar a model e migration de materiais de apoio para artigos
+npx sequelize-cli model:generate --name ArticleAttachment --attributes article_id:integer,file_url:string
+
+# Gerar a model e migration de notificações de artigos
+npx sequelize-cli model:generate --name ArticleNotification --attributes user_id:integer,message:string,is_read:boolean
+
+# Gerar a model e migration de quizzes dos artigos
+npx sequelize-cli model:generate --name ArticleQuiz --attributes article_id:integer,question:string
+
+# Gerar a model e migration de respostas dos quizzes dos artigos
+npx sequelize-cli model:generate --name ArticleQuizAnswer --attributes quiz_id:integer,user_id:integer,answer:string,is_correct:boolean
