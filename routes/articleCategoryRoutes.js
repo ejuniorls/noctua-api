@@ -9,67 +9,31 @@ const router = Router();
 
 /**
  * @swagger
- * tags:
- *   name: Article Categories
- *   description: User Role Management
- */
-
-/**
- * @swagger
- *
- * /api/article_categories:
+ * /article-categories:
  *   post:
- *     summary: Create article categort
+ *     summary: Criar uma nova categoria de artigo
+ *     tags:
+ *       - Article Categories
  *     security:
- *       - bearerAuth: []
- *     tags: [Article Categories]
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
  *             properties:
  *               name:
  *                 type: string
  *     responses:
  *       201:
- *         description: Created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: true
- *                 response:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     name:
- *                       type: string
- *                     slug:
- *                       type: string
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
+ *         description: Categoria criada com sucesso
  *       400:
- *         description: Bad Request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: string
+ *         description: Dados inválidos
+ *       401:
+ *         description: Não autorizado
  */
 router.post("/", authenticateToken, (req, res) =>
   articleCategoryController.create(req, res),
@@ -77,60 +41,29 @@ router.post("/", authenticateToken, (req, res) =>
 
 /**
  * @swagger
- * /api/article_categories:
+ * /article-categories:
  *   get:
- *     summary: Returns all article categorie
- *     description: Gets the list of available article categories
- *     tags: [Article Categories]
+ *     summary: Listar todas as categorias de artigos
+ *     tags:
+ *       - Article Categories
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Número da página
+ *         schema:
+ *           type: integer
+ *       - name: limit
+ *         in: query
+ *         description: Quantidade de itens por página
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: List of article categories
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: true
- *                 response:
- *                   type: object
- *                   properties:
- *                     count:
- *                       type: integer
- *                       example: 2
- *                     rows:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: integer
- *                             example: 1
- *                           name:
- *                             type: string
- *                             example: "matemática"
- *                           slug:
- *                             type: string
- *                             example: "matematica"
- *                           createdAt:
- *                             type: string
- *                             format: date-time
- *                             example: "2025-02-15T01:08:03.000Z"
- *                           updatedAt:
- *                             type: string
- *                             format: date-time
- *                             example: "2025-02-15T01:08:03.000Z"
- *                           deletedAt:
- *                             type: string
- *                             nullable: true
- *                             example: null
+ *         description: Lista de categorias retornada com sucesso
  *       401:
- *         description: Unauthorized, missing or invalid token
- *       500:
- *         description: Internal Server Error
+ *         description: Não autorizado
  */
 router.get("/", authenticateToken, pagination, (req, res) =>
   articleCategoryController.findAll(req, res),
@@ -138,64 +71,26 @@ router.get("/", authenticateToken, pagination, (req, res) =>
 
 /**
  * @swagger
- * /api/article_categories/{id}:
+ * /article-categories/{id}:
  *   get:
- *     summary: Returns an article category by ID
- *     description: Gets the details of a specific article category by its ID
- *     tags: [Article Categories]
+ *     summary: Buscar uma categoria pelo ID
+ *     tags:
+ *       - Article Categories
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
- *         description: Article Category ID
  *         schema:
  *           type: integer
- *           example: 1
  *     responses:
  *       200:
- *         description: Article category data
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: true
- *                 response:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                       example: 1
- *                     name:
- *                       type: string
- *                       example: "matemática"
- *                     slug:
- *                       type: string
- *                       example: "matematica"
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       example: "2025-02-15T01:08:03.000Z"
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
- *                       example: "2025-02-15T01:08:03.000Z"
- *                     deletedAt:
- *                       type: string
- *                       nullable: true
- *                       example: null
- *       400:
- *         description: Invalid request, poorly formatted ID
- *       401:
- *         description: Unauthorized, missing or invalid token
+ *         description: Categoria encontrada
  *       404:
- *         description: Article category not found
- *       500:
- *         description: Internal Server Error
+ *         description: Categoria não encontrada
+ *       401:
+ *         description: Não autorizado
  */
 router.get("/:id", authenticateToken, (req, res) =>
   articleCategoryController.findById(req, res),
@@ -203,22 +98,19 @@ router.get("/:id", authenticateToken, (req, res) =>
 
 /**
  * @swagger
- * /api/article_categories/{id}:
+ * /article-categories/{id}:
  *   put:
- *     summary: Update an article category by ID
- *     description: Updates the details of a specific article category
+ *     summary: Atualizar uma categoria de artigo
  *     tags:
  *       - Article Categories
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
- *         description: ID of the article category to be updated
  *         schema:
  *           type: integer
- *           example: 2
  *     requestBody:
  *       required: true
  *       content:
@@ -228,96 +120,42 @@ router.get("/:id", authenticateToken, (req, res) =>
  *             properties:
  *               name:
  *                 type: string
- *                 example: "portuguese"
  *     responses:
  *       200:
- *         description: Article category successfully updated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: true
- *                 response:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                       example: 2
- *                     name:
- *                       type: string
- *                       example: "portuguese"
- *                     slug:
- *                       type: string
- *                       example: "portuguese"
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       example: "2025-02-15T22:46:13.000Z"
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
- *                       example: "2025-02-15T23:17:05.366Z"
- *                     deletedAt:
- *                       type: string
- *                       nullable: true
- *                       example: null
+ *         description: Categoria atualizada com sucesso
  *       400:
- *         description: Invalid request, validation error
+ *         description: Dados inválidos
  *       401:
- *         description: Unauthorized, missing or invalid token
+ *         description: Não autorizado
  *       404:
- *         description: Article category not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: string
- *                   example: "record not found"
- *       500:
- *         description: Internal server error
+ *         description: Categoria não encontrada
  */
-
 router.put("/:id", authenticateToken, (req, res) =>
   articleCategoryController.update(req, res),
 );
 
 /**
  * @swagger
- * /api/article_categories/{id}:
+ * /article-categories/{id}:
  *   delete:
- *     summary: Remove a user role by id (soft delete)
+ *     summary: Remover uma categoria de artigo
+ *     tags:
+ *       - Article Categories
  *     security:
- *       - bearerAuth: []
- *     tags: [Article Categories]
+ *       - BearerAuth: []
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID do post a ser deletado
  *     responses:
  *       200:
- *         description: User deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
+ *         description: Categoria removida com sucesso
+ *       401:
+ *         description: Não autorizado
  *       404:
- *         description: User not found
- *       500:
- *         description: Failed to delete user
+ *         description: Categoria não encontrada
  */
 router.delete("/:id", authenticateToken, (req, res) =>
   articleCategoryController.delete(req, res),
@@ -325,29 +163,26 @@ router.delete("/:id", authenticateToken, (req, res) =>
 
 /**
  * @swagger
- *
- * /api/article_categories/{id}:
+ * /article-categories/restore/{id}:
  *   post:
- *     summary: Restore user by id
+ *     summary: Restaurar uma categoria removida
+ *     tags:
+ *       - Article Categories
  *     security:
- *       - bearerAuth: []
- *     tags: [Article Categories]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               id:
- *                 type: number
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
  *     responses:
- *       201:
- *         description: User restored successfully
+ *       200:
+ *         description: Categoria restaurada com sucesso
+ *       401:
+ *         description: Não autorizado
  *       404:
- *         description: User not found
- *       500:
- *         description: Failed to restore user
+ *         description: Categoria não encontrada
  */
 router.post("/restore/:id", authenticateToken, (req, res) =>
   articleCategoryController.restore(req, res),
